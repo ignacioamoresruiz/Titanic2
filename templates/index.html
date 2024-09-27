@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervivencia en el Titanic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .class-option {
+            display: inline-block;
+            margin-right: 10px;
+            text-align: center;
+        }
+        .class-option input[type="radio"] {
+            display: none;
+        }
+        .class-option img {
+            width: 20vw;
+            height: 20vw;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        .class-option input[type="radio"]:checked + label img {
+            border-color: #007bff;
+            border-width: 3px;
+        }
+        /* Asegurar que el texto se posicione encima de la imagen */
+        .class-option label {
+            display: block;
+            font-weight: bold;
+        }
+        .class-option .class-text {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .sex-option {
+        margin-right: 20px;
+        text-align: center;
+        }
+
+        .sex-option input[type="radio"] {
+            display: none; /* Ocultar el botón de radio */
+        }
+
+        .sex-option img {
+            width: 200px;
+            height: 200px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .sex-option input[type="radio"]:checked + label img {
+            border-color: #007bff; /* Cambiar el color del borde cuando se selecciona */
+        }
+
+        .sex-text {
+            display: block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        #agegroup {
+        width: 80%;
+        text-align: center;
+        }
+        .form-range {
+            width: 80%; /* Asegura que el slider y las etiquetas tengan el mismo ancho */
+            
+        }
+        .d-flex.justify-content-between span {
+            font-size: 0.9em;
+            text-align: center; /* Centra el texto de las etiquetas */
+            width: 14%; /* Asegura que todas las etiquetas ocupen el mismo espacio proporcional */
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="card-title text-center">Estimar la Tasa de Supervivencia</h1>
+                <form action="/predict" method="post">
+                    <!-- Selección de Clase usando imágenes -->
+                    <div class="mb-3 text-center">
+                        <label for="pclass" class="form-label">Clase del Pasajero:</label>
+                        <div class="d-flex justify-content-center">
+                            <div class="class-option" id="option1">
+                                <input type="radio" id="pclass1" name="pclass" value="1" required>
+                                <label for="pclass1" class="d-block">
+                                    <span class="class-text">1º Clase</span>
+                                    <img src="{{ url_for('static', filename='img/saludo1.jpeg') }}" alt="Primera Clase">
+                                    
+                                </label>
+                            </div>
+                            <div class="class-option" id="option2">
+                                <input type="radio" id="pclass2" name="pclass" value="2">
+                                <label for="pclass2" class="d-block">
+                                    <span class="class-text">2º Clase</span>
+                                    <img src="{{ url_for('static', filename='img/cubierta2.jpeg') }}" alt="Segunda Clase">
+                                    
+                                </label>
+                            </div>
+                            <div class="class-option" id="option3">
+                                <input type="radio" id="pclass3" name="pclass" value="3">
+                                <label for="pclass3" class="d-block">
+                                    <span class="class-text">3º Clase</span>
+                                    <img src="{{ url_for('static', filename='img/baile3.jpeg') }}" alt="Tercera Clase">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- El resto de los campos del formulario -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="sex-option" id="sex-male">
+                            <input type="radio" id="sex1" name="sex" value="male" required>
+                            <label for="sex1" class="d-block text-center">
+                                <span class="sex-text">Hombre</span>
+                                <img src="{{ url_for('static', filename='img/male.png') }}" alt="Hombre" class="img-fluid rounded">
+                            </label>
+                        </div>
+                        <div class="sex-option" id="sex-female" class="ms-4">
+                            <input type="radio" id="sex2" name="sex" value="female">
+                            <label for="sex2" class="d-block text-center">
+                                <span class="sex-text">Mujer</span>
+                                <img src="{{ url_for('static', filename='img/female.png') }}" alt="Mujer" class="img-fluid rounded">
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="sibsp" class="form-label">Número de hermanos/esposas a bordo:</label>
+                        <input type="number" class="form-control" id="sibsp" name="sibsp" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="parch" class="form-label">Número de padres/hijos a bordo:</label>
+                        <input type="number" class="form-control" id="parch" name="parch" required>
+                    </div>
+                    <!-- Añade los demás campos aquí -->
+                    <div class="mb-3 d-flex flex-column align-items-center">
+                        <label for="agegroup" class="form-label">Grupo de Edad:</label>
+                        
+                        <!-- Slider con 80% de ancho centrado -->
+                        <input type="range" class="form-range" id="agegroup" name="agegroup" min="1" max="7" step="1" value="5" 
+                               oninput="ageOutput.value = agegroup.value" style="width: 80%;" required>
+                        
+                        <!-- Mostrar el valor del slider -->
+                        <output id="ageOutput" style="margin-left: 10px;">5</output>
+                    
+                        <!-- Etiquetas distribuidas uniformemente, centradas con el slider -->
+                        <div class="d-flex justify-content-between mt-2" style="width: 90%;">
+                            <span style="text-align: center;">Baby</span>
+                            <span style="text-align: center;">Child</span>
+                            <span style="text-align: center;">Teenager</span>
+                            <span style="text-align: center;">Student</span>
+                            <span style="text-align: center;">Young Adult</span>
+                            <span style="text-align: center;">Adult</span>
+                            <span style="text-align: center;">Senior</span>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="mb-3">
+                        <label for="embarked" class="form-label">Puerto de Embarque:</label>
+                        <select id="embarked" name="embarked" class="form-select" required>
+                            <option value="S">Southampton</option>
+                            <option value="C">Cherbourg</option>
+                            <option value="Q">Queenstown</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cabinbool" class="form-label">¿Tenía cabina asignada? (1: Sí, 0: No):</label>
+                        <input type="number" class="form-control" id="cabinbool" name="cabinbool" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Título (1=Master,2=Miss, 3=Mr, 4=Mrs, 5=Rare, 6=Royal):</label>
+                        <input type="number" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fareband" class="form-label">Banda de Tarifa:(1-4) 1:barata 4:cara</label>
+                        <input type="number" class="form-control" id="fareband" name="fareband" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelo" class="form-label">Selecciona el Modelo:</label>
+                        <select id="modelo" name="modelo" class="form-select" required>
+                            <option value="1">Gradient Boosting Classifier</option>
+                            <option value="2">Support Vector Machine (SVC)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Predecir Supervivencia</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enlace al JavaScript de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript personalizado para resaltar la imagen seleccionada -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const options = document.querySelectorAll(".class-option");
+
+            options.forEach(option => {
+                const radio = option.querySelector("input[type='radio']");
+                radio.addEventListener("change", function() {
+                    // Remover la clase 'selected' de todos los elementos
+                    options.forEach(opt => opt.classList.remove("selected"));
+
+                    // Añadir la clase 'selected' al contenedor del radio button seleccionado
+                    if (radio.checked) {
+                        option.classList.add("selected");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
